@@ -1,10 +1,31 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '/models/memo.dart';
 
 class AddMemoScreen extends StatelessWidget {
   static const routeName = '/add-memo';
-  final _titleController = TextEditingController();
-  final _commentController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
+
+  Memo _addMemo = new Memo(
+    "",
+    "",
+    DateTime.now(),
+  );
+
+  void _saveMemo(BuildContext context) {
+    final isValid = formKey.currentState!.validate();
+    if (isValid) {
+      formKey.currentState!.save();
+      Navigator.of(context).pop();
+    } else {
+      // Scaffold.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text("입력 값을 확인해주세요."),
+      //   ),
+      // );
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +33,19 @@ class AddMemoScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("메모 등록"),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              _saveMemo(context);
+            },
+            icon: Icon(Icons.save),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
+        child: Form(
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -34,10 +64,18 @@ class AddMemoScreen extends StatelessWidget {
               Container(
                 child: Column(
                   children: <Widget>[
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(labelText: "제목을 입력해주세요."),
-                      textInputAction: TextInputAction.done,
-                      controller: _titleController,
+                      textInputAction: TextInputAction.next,
+                      onSaved: (value) {
+                        _addMemo = Memo(value.toString(), _addMemo.comment,
+                            _addMemo.uploadDate);
+                      },
+                      validator: (value) {
+                        if (value.toString().isEmpty) {
+                          return "제목은 필수사항입니다.";
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -55,7 +93,7 @@ class AddMemoScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 5,
+                height: 10,
               ),
               Container(
                 child: Column(
@@ -70,12 +108,23 @@ class AddMemoScreen extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        child: TextField(
-                          decoration: InputDecoration(labelText: "내용을 입력해주세요."),
-                          maxLines: 10,
-                          textInputAction: TextInputAction.next,
+                        padding: const EdgeInsets.all(8),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              labelText: "내용을 입력해주세요.",
+                              border: InputBorder.none),
+                          maxLines: null,
+                          textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.multiline,
-                          controller: _commentController,
+                          onSaved: (value) {
+                            _addMemo = Memo(_addMemo.title, value.toString(),
+                                _addMemo.uploadDate);
+                          },
+                          validator: (value) {
+                            if (value.toString().isEmpty) {
+                              return "내용은 필수사항입니다.";
+                            }
+                          },
                         ),
                       ),
                     ),
