@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '/screens/trash_screen.dart';
+import '/screens/user_info_screen.dart';
+import '/widgets/app_drawer.dart';
 import '/screens/add_memo_screen.dart';
 
 void main() {
@@ -19,7 +21,10 @@ class MyApp extends StatelessWidget {
         fontFamily: 'baemin',
       ),
       home: MyHomePage(),
+      initialRoute: '/',
       routes: {
+        UserInfoScreen.routeName : (ctx) => UserInfoScreen(),
+        TrashScreen.routeName : (ctx) => TrashScreen(),
         AddMemoScreen.routeName: (ctx) => AddMemoScreen(),
       },
     );
@@ -41,6 +46,7 @@ class MyHomePage extends StatelessWidget {
           ),
         ],
       ),
+      drawer: AppDrawer(),
       body: Center(
         child: Text("메인"),
       ),
