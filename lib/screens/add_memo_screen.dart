@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '/providers/memo_provider.dart';
 import '/models/memo.dart';
+
 
 class AddMemoScreen extends StatelessWidget {
   static const routeName = '/add-memo';
@@ -9,6 +12,7 @@ class AddMemoScreen extends StatelessWidget {
   Memo _addMemo = new Memo(
     "",
     "",
+    "",
     DateTime.now(),
   );
 
@@ -16,6 +20,7 @@ class AddMemoScreen extends StatelessWidget {
     final isValid = formKey.currentState!.validate();
     if (isValid) {
       formKey.currentState!.save();
+      Provider.of<MemoProvider>(context,listen: false).addMemo(_addMemo.title, _addMemo.content);
       Navigator.of(context).pop();
     } else {
       // Scaffold.of(context).showSnackBar(
@@ -68,7 +73,7 @@ class AddMemoScreen extends StatelessWidget {
                       decoration: InputDecoration(labelText: "제목을 입력해주세요."),
                       textInputAction: TextInputAction.next,
                       onSaved: (value) {
-                        _addMemo = Memo(value.toString(), _addMemo.comment,
+                        _addMemo = Memo(_addMemo.id, value.toString(), _addMemo.content,
                             _addMemo.uploadDate);
                       },
                       validator: (value) {
@@ -117,7 +122,7 @@ class AddMemoScreen extends StatelessWidget {
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.multiline,
                           onSaved: (value) {
-                            _addMemo = Memo(_addMemo.title, value.toString(),
+                            _addMemo = Memo(_addMemo.id, _addMemo.title, value.toString(),
                                 _addMemo.uploadDate);
                           },
                           validator: (value) {
