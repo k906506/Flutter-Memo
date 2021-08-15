@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import '/widgets/memo_item.dart';
+import 'providers/memo_provider.dart';
 import '/screens/trash_screen.dart';
 import '/screens/user_info_screen.dart';
 import '/widgets/app_drawer.dart';
 import '/screens/add_memo_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
@@ -13,25 +16,37 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Memo App",
-      theme: ThemeData(
-        primaryColor: Colors.green,
-        accentColor: Colors.greenAccent,
-        fontFamily: 'baemin',
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => MemoProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: "Memo App",
+        theme: ThemeData(
+          primaryColor: Colors.green,
+          accentColor: Colors.greenAccent,
+          fontFamily: 'baemin',
+        ),
+        home: MyHomePage(),
+        initialRoute: '/',
+        routes: {
+          UserInfoScreen.routeName: (ctx) => UserInfoScreen(),
+          TrashScreen.routeName: (ctx) => TrashScreen(),
+          AddMemoScreen.routeName: (ctx) => AddMemoScreen(),
+        },
       ),
-      home: MyHomePage(),
-      initialRoute: '/',
-      routes: {
-        UserInfoScreen.routeName : (ctx) => UserInfoScreen(),
-        TrashScreen.routeName : (ctx) => TrashScreen(),
-        AddMemoScreen.routeName: (ctx) => AddMemoScreen(),
-      },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +63,25 @@ class MyHomePage extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: Center(
-        child: Text("메인"),
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: GridView.builder(
+            itemBuilder: (context, index) {
+              return MemoItem(
+                Provider.of<MemoProvider>(context).items[index].id,
+                Provider.of<MemoProvider>(context).items[index].title,
+                Provider.of<MemoProvider>(context).items[index].content,
+                Provider.of<MemoProvider>(context).items[index].uploadDate,
+              );
+            },
+            itemCount: Provider.of<MemoProvider>(context).items.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+            ),
+          ),
+        ),
       ),
     );
   }
