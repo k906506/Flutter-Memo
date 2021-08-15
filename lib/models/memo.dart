@@ -1,7 +1,8 @@
 class Memo {
+  String id; // 일종의 Primary key
   String title;
-  String comment;
+  String content;
   DateTime uploadDate;
 
-  Memo(this.title, this.comment, this.uploadDate);
+  Memo(this.id, this.title, this.content, this.uploadDate);
 }
