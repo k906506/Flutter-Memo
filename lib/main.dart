@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttermemo/screens/deleted_memo_screen.dart';
 import '/widgets/memo_item.dart';
+import 'models/memo.dart';
 import 'providers/memo_provider.dart';
 import '/screens/trash_screen.dart';
 import '/screens/user_info_screen.dart';
@@ -35,6 +37,7 @@ class MyApp extends StatelessWidget {
           UserInfoScreen.routeName: (ctx) => UserInfoScreen(),
           TrashScreen.routeName: (ctx) => TrashScreen(),
           AddMemoScreen.routeName: (ctx) => AddMemoScreen(),
+          DeletedMemoScreen.routeName: (ctx) => DeletedMemoScreen(),
         },
       ),
     );
@@ -55,31 +58,37 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(AddMemoScreen.routeName);
+              Navigator.of(context).pushNamed(
+                AddMemoScreen.routeName,
+                arguments: Memo(
+                  "",
+                  "",
+                  "",
+                  DateTime.now(),
+                ),
+              );
             },
             icon: Icon(Icons.add),
           ),
         ],
       ),
       drawer: AppDrawer(),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: GridView.builder(
-            itemBuilder: (context, index) {
-              return MemoItem(
-                Provider.of<MemoProvider>(context).items[index].id,
-                Provider.of<MemoProvider>(context).items[index].title,
-                Provider.of<MemoProvider>(context).items[index].content,
-                Provider.of<MemoProvider>(context).items[index].uploadDate,
-              );
-            },
-            itemCount: Provider.of<MemoProvider>(context).items.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-            ),
+      body: Padding(
+        padding: EdgeInsets.all(8),
+        child: GridView.builder(
+          itemBuilder: (context, index) {
+            return MemoItem(
+              Provider.of<MemoProvider>(context).items[index].id,
+              Provider.of<MemoProvider>(context).items[index].title,
+              Provider.of<MemoProvider>(context).items[index].content,
+              Provider.of<MemoProvider>(context).items[index].uploadDate,
+            );
+          },
+          itemCount: Provider.of<MemoProvider>(context).items.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5,
           ),
         ),
       ),
