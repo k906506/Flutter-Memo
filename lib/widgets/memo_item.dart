@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '/providers/memo_provider.dart';
+import 'package:provider/provider.dart';
+import '/models/memo.dart';
+import '/screens/add_memo_screen.dart';
 import 'package:intl/intl.dart';
 
 class MemoItem extends StatelessWidget {
@@ -11,22 +15,59 @@ class MemoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(title),
-          Text(
-            DateFormat('MM월 dd일\nkk시 mm분').format(uploadDate),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          AddMemoScreen.routeName,
+          arguments: Memo(id, title, content, uploadDate),
+        );
+      },
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("삭제"),
+              content: Text("메모를 삭제하시겠습니까?"),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("예"),
+                  onPressed: () {
+                    Provider.of<MemoProvider>(context, listen: false)
+                        .deleteMemo(id);
+                    Provider.of<MemoProvider>(context, listen: false)
+                        .addDeletedMemo(id, title, content, uploadDate);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("아니오"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black,
           ),
-        ],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(title),
+            Text(
+              DateFormat('MM월 dd일\nkk시 mm분').format(uploadDate),
+            ),
+          ],
+        ),
       ),
     );
   }
