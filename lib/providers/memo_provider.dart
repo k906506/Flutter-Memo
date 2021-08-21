@@ -4,6 +4,9 @@ import 'package:fluttermemo/models/memo.dart';
 class MemoProvider with ChangeNotifier {
   List<Memo> memos = [];
   List<Memo> deletedMemos = [];
+  String token;
+
+  MemoProvider(this.token, this.memos, this.deletedMemos);
 
   List<Memo> get items {
     return [...memos];
