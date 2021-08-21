@@ -21,7 +21,7 @@ class _DeletedMemoScreenState extends State<DeletedMemoScreen> {
 
   @override
   void didChangeDependencies() {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Memo;
+    final arguments = ModalRoute.of(context).settings.arguments as Memo;
     _deletedMemo.id = arguments.id;
     _deletedMemo.title = arguments.title;
     _deletedMemo.content = arguments.content;

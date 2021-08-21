@@ -21,9 +21,9 @@ class _AddMemoScreenState extends State<AddMemoScreen> {
   );
 
   void _saveMemo(BuildContext context) {
-    final isValid = formKey.currentState!.validate();
+    final isValid = formKey.currentState.validate();
     if (isValid) {
-      formKey.currentState!.save();
+      formKey.currentState.save();
       Provider.of<MemoProvider>(context, listen: false)
           .addMemo(_addMemo.id, _addMemo.title, _addMemo.content);
       Navigator.of(context).pop();
@@ -39,7 +39,7 @@ class _AddMemoScreenState extends State<AddMemoScreen> {
 
   @override
   void didChangeDependencies() {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Memo;
+    final arguments = ModalRoute.of(context).settings.arguments as Memo;
     _addMemo.id = arguments.id;
     _addMemo.title = arguments.title;
     _addMemo.content = arguments.content;
