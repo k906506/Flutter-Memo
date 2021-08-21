@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttermemo/providers/auth_provider.dart';
 import 'package:fluttermemo/screens/deleted_memo_screen.dart';
 import '/widgets/memo_item.dart';
 import 'models/memo.dart';
@@ -21,24 +22,31 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => MemoProvider(),
+          create: (ctx) => AuthProvider(),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, MemoProvider>(
+          create: (ctx) => MemoProvider("", [], []),
+          update: (ctx, auth, memo) =>
+              MemoProvider(auth.token, memo.items, memo.deletedItems),
         ),
       ],
-      child: MaterialApp(
-        title: "Memo App",
-        theme: ThemeData(
-          primaryColor: Colors.green,
-          accentColor: Colors.greenAccent,
-          fontFamily: 'baemin',
+      child: Consumer<AuthProvider>(
+        builder: (context, auth, _) => MaterialApp(
+          title: "Memo App",
+          theme: ThemeData(
+            primaryColor: Colors.green,
+            accentColor: Colors.greenAccent,
+            fontFamily: 'baemin',
+          ),
+          home: auth.isAuth ? MyHomePage() : LoginScreen(),
+          initialRoute: '/',
+          routes: {
+            UserInfoScreen.routeName: (ctx) => UserInfoScreen(),
+            TrashScreen.routeName: (ctx) => TrashScreen(),
+            AddMemoScreen.routeName: (ctx) => AddMemoScreen(),
+            DeletedMemoScreen.routeName: (ctx) => DeletedMemoScreen(),
+          },
         ),
-        home: MyHomePage(),
-        initialRoute: '/',
-        routes: {
-          UserInfoScreen.routeName: (ctx) => UserInfoScreen(),
-          TrashScreen.routeName: (ctx) => TrashScreen(),
-          AddMemoScreen.routeName: (ctx) => AddMemoScreen(),
-          DeletedMemoScreen.routeName: (ctx) => DeletedMemoScreen(),
-        },
       ),
     );
   }
