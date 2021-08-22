@@ -7,15 +7,22 @@ class AuthProvider with ChangeNotifier {
   String _email;
 
   String get token {
-    return _token;
+    if (_token != null) {
+      return _token;
+    }
+    return null;
   }
-
-  String get email {
-    return _email;
-  }
+  //
+  // String get email {
+  //   return _email;
+  // }
 
   bool get isAuth {
     return _token != null;
+  }
+
+  Future<void> login(String email, String password) async {
+    await _authenticate(email, password, 'verifyPassword');
   }
 
   Future<void> _authenticate(String email, String password, String type) async {
@@ -31,6 +38,8 @@ class AuthProvider with ChangeNotifier {
         },
       ),
     );
-    print(response.body);
+    final responseData = json.decode(response.body);
+    _token = responseData['idToken'];
+    notifyListeners();
   }
 }
