@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttermemo/providers/auth_provider.dart';
-import 'package:fluttermemo/screens/deleted_memo_screen.dart';
+import '/providers/auth_provider.dart';
+import '/screens/deleted_memo_screen.dart';
+import '/screens/login_screen.dart';
 import '/widgets/memo_item.dart';
 import 'models/memo.dart';
 import 'providers/memo_provider.dart';
@@ -58,6 +59,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var _initState = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_initState) {
+      print("didChangeDependencies");
+      Provider.of<MemoProvider>(context, listen: false).fetchAndSetMemo();
+      _initState = false;
+      super.didChangeDependencies();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
