@@ -34,9 +34,7 @@ class MemoItem extends StatelessWidget {
                   child: Text("예"),
                   onPressed: () {
                     Provider.of<MemoProvider>(context, listen: false)
-                        .deleteMemo(id);
-                    Provider.of<MemoProvider>(context, listen: false)
-                        .addDeletedMemo(id, title, content, uploadDate);
+                        .deleteMemo(id, title, content, uploadDate);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -62,9 +60,15 @@ class MemoItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(title),
+            Text(
+              title,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
             Text(
               DateFormat('MM월 dd일\nkk시 mm분').format(uploadDate),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
