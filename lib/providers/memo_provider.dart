@@ -19,17 +19,22 @@ class MemoProvider with ChangeNotifier {
     return [...deletedMemos];
   }
 
+  // 등록된 메모를 가져오는 메소드
   Future<void> fetchAndSetMemo() async {
+    // 1. token을 이용하여 실시간 데이터베이스에 접근한다.
     final url =
         'https://fluttermemo-f35db-default-rtdb.firebaseio.com/memos.json?auth=$token';
     final response = await http.get(
       Uri.parse(url),
     );
+
     final responseData = json.decode(response.body) as Map<String, dynamic>;
-    List<Memo> loadedMemos = [];
-    List<Memo> loadedDeleteMemos = [];
-    print(responseData);
+    List<Memo> loadedMemos = []; // 메모를 저장하기 위한 리스트 변수
+    List<Memo> loadedDeleteMemos = []; // 삭제된 메모를 저장하기 위한 리스트 변수
+
+    // 2. 응답데이터를 이용하여 선언한 변수를 채운다.
     if (responseData != null) {
+      // 2-1. 등록된 메모는 있지만 삭제된 메모가 없는 경우
       if (responseData['upload'] != null && responseData['delete'] == null) {
         responseData['upload'].forEach(
           (key, value) {
@@ -43,8 +48,9 @@ class MemoProvider with ChangeNotifier {
             );
           },
         );
-      } else if (responseData['upload'] == null &&
-          responseData['delete'] != null) {
+      }
+      // 2-2. 등록된 메모는 없지만 삭제된 메모는 있는 경우
+      else if (responseData['upload'] == null && responseData['delete'] != null) {
         responseData['delete'].forEach(
           (key, value) {
             loadedDeleteMemos.add(
@@ -57,7 +63,9 @@ class MemoProvider with ChangeNotifier {
             );
           },
         );
-      } else {
+      }
+      // 2-3. 등록된 메모도 있고 삭제된 메모도 있는 경우
+      else {
         responseData['upload'].forEach(
           (key, value) {
             loadedMemos.add(
